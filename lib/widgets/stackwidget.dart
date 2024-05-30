@@ -9,8 +9,10 @@ class StackWidget extends StatelessWidget {
   final String text;
   final VoidCallback? onTap;
   final VoidCallback? tabarrow;
+  final IconData? optionalIcon; 
+  final bool? search;
   const StackWidget({super.key, this.hintText,this.arrow,   required this.text,this.onTap,
-  this.tabarrow});
+  this.tabarrow,this.optionalIcon,this.search});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +29,7 @@ class StackWidget extends StatelessWidget {
                             alignment: Alignment.center,
                             height: screenHeight*0.25,
                             width: screenWidth,
-                            color: Color(0xFFf5f5f5),
+                            
                             
                           ),
                         ],
@@ -44,7 +46,7 @@ class StackWidget extends StatelessWidget {
               ),
                     ),
                   ),
-                   Positioned(top: 50,
+                   Positioned(top: 90,
                   
                                   left: 20,
                                   child: 
@@ -55,7 +57,7 @@ class StackWidget extends StatelessWidget {
                                       ),
                                    ),
                               // The search icon
-                            _selectedIndex!=4?  Positioned(top: 50,
+                            optionalIcon !=null?  Positioned(top: 50,
                               
                                 right: 20,
                                 child: InkWell(onTap: onTap,
@@ -75,7 +77,7 @@ class StackWidget extends StatelessWidget {
                                           shape: BoxShape.circle,
                                         ),
                                         child: Icon(
-                                          Icons.local_police_sharp,
+                                          optionalIcon,
                                           color: Colors.white,
                                           size: 20.0,
                                         ),
@@ -89,7 +91,7 @@ class StackWidget extends StatelessWidget {
                   
                 ],
               ), ),
-            _selectedIndex!=3 ?  Positioned(bottom: 0,
+            search==true ?  Positioned(bottom: 0,
               left: 10,
               right: 10,
                 child:Padding(

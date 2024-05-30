@@ -18,8 +18,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart';
 
-class SubscribersNotifier extends StateNotifier<subscription> {
-  SubscribersNotifier() : super(subscription());
+class PropertyNotifier extends StateNotifier<subscription> {
+  PropertyNotifier() : super(subscription());
 
   // Future<bool> tryAutoLogin() async {
   //   final prefs = await SharedPreferences.getInstance();
@@ -184,9 +184,9 @@ class SubscribersNotifier extends StateNotifier<subscription> {
     return SubscriberResult(responseCode, errorMessage: errorMessage);
   }
 
-  Future<void> getSubscribers() async{
+  Future<void> getProperty() async{
   try{
-final response = await http.get(Uri.parse(Api.subscriptions));
+final response = await http.get(Uri.parse(Api.getProperty));
 var res=json.decode(response.body);
 var userData=subscription.fromJson(res);
 state=userData;
@@ -205,8 +205,8 @@ Data? getSubById(int id) {
 
 }
 
-final subscribersProvider = StateNotifierProvider<SubscribersNotifier, subscription>((ref) {
-  return SubscribersNotifier();
+final propertyProvider = StateNotifierProvider<PropertyNotifier, subscription>((ref) {
+  return PropertyNotifier();
 });
 
 class SubscriberResult {

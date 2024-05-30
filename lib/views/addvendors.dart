@@ -14,7 +14,7 @@ import '/widgets/customtextfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:latlong2/latlong.dart';
 import '../widgets/customelevatedbutton.dart';
 
 class AddVendor extends StatefulWidget {
@@ -24,7 +24,7 @@ class AddVendor extends StatefulWidget {
   State<AddVendor> createState() => _AddVendorState();
 }
 
-class _AddVendorState extends State<AddVendor> {
+class _AddVendorState extends State<AddVendor> with TickerProviderStateMixin {
   final FocusNode _focusNodeName = FocusNode();
   final FocusNode _focusNodeEmail = FocusNode();
   final FocusNode _focusNodeContact = FocusNode();
@@ -33,7 +33,11 @@ class _AddVendorState extends State<AddVendor> {
   final FocusNode _focusNodeState = FocusNode();
   final FocusNode _focusNodeCity = FocusNode();
   final FocusNode _focusNodePincode = FocusNode();
-
+  FocusNode focusNodeCurrentLocation = FocusNode();
+  bool mapcreated = false;
+    late AnimationController _animationController;
+  late Animation<LatLng> _animation;
+MapController mapController = MapController();
   bool _isFocusedName = false;
   bool _isFocusedEmail = false;
   bool _isFocusedContact = false;
@@ -43,9 +47,45 @@ class _AddVendorState extends State<AddVendor> {
   bool _isFocusedCity = false;
   bool _isFocusedPincode = false;
 
+void animateCamera(LatLng targetPosition, double zoom) {
+    if (!mapcreated) return; // Do nothing if the map is not created
+
+    LatLng startPosition = LatLng(
+      mapController.camera.center.latitude,
+      mapController.camera.center.longitude,
+    );
+
+    _animation = LatLngTween(
+      begin: startPosition,
+      end: targetPosition,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeInOut, // Customize the animation curve
+      ),
+    );
+
+    _animationController.addListener(() {
+      LatLng newPos = _animation.value;
+      mapController.move(newPos, zoom);
+    });
+    _animationController.duration = const Duration(milliseconds: 500);
+    _animationController.reset();
+    _animationController.forward();
+  }
+   void _onFocusChange() {
+    // Call setState to rebuild the widget with the changed focus state
+    setState(() {});
+  }
   @override
   void initState() {
     super.initState();
+      _animationController = AnimationController(
+        
+      vsync: this,
+      duration: const Duration(seconds: 2), // Customize the duration
+    );
+     focusNodeCurrentLocation.addListener(_onFocusChange);
     _focusNodeName.addListener(_handleFocusChangeName);
     _focusNodeEmail.addListener(_handleFocusChangeEmail);
     _focusNodeContact.addListener(_handleFocusChangeContact);
@@ -153,7 +193,7 @@ class _AddVendorState extends State<AddVendor> {
     return Scaffold(
       body: Consumer(builder: (context, ref, child) {
         final controller = ref.watch(selectionModelProvider.notifier);
-        final pickedImage = ref.watch(imageProvider).profilePic;
+        final pickedImage = ref.watch(imageProvider).coverPage;
         final selection = ref.watch(selectionModelProvider);
         final loading = ref.watch(loadingProvider);
         return SingleChildScrollView(
@@ -345,6 +385,9 @@ class _AddVendorState extends State<AddVendor> {
                           textController: selection.password,
                           hintText: "password",
                           filled: true,
+                          onChanged: (newVlue) {
+                            controller.updateEnteredPassword(newVlue);
+                          },
                           filledColor:
                               _isFocusedEmail ? Colors.white : Colors.grey[300],
                           applyDecoration: true),
@@ -532,14 +575,14 @@ class _AddVendorState extends State<AddVendor> {
                         height: 20,
                       ),
                       const Text(
-                        "Location of property (optional)",
+                        "Location of property",
                         style: TextStyle(color: Colors.black, fontSize: 16),
                       ),
                       const SizedBox(
                         height: 10,
                       ),
                       CustomTextFormField(
-                      suffixIcon:Icon(Icons.my_location) ,
+                      suffixIcon:const Icon(Icons.my_location) ,
                       textController: selection.location,
                       onSuffixIconTap: (){
                         ref.read(locationProvider.notifier).getLocation(selection.location,ref);
@@ -563,30 +606,39 @@ class _AddVendorState extends State<AddVendor> {
                       Container(
                         width: ScreenWidth * 0.8,
                         height: 200,
-                        child: FlutterMap(
-                          options: MapOptions(
-                            // center: LatLng(latitude, longitude),
-                            zoom: 13.0,
-                          ),
-                          children: [
-                            TileLayer(
-                                urlTemplate:
-                                    "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-                               ),
-                            // MarkerLayer(
-                            //   markers: [
-                            //     Marker(
-                            //       width: 80.0,
-                            //       height: 80.0,
-                            //       point: LatLng(latitude, longitude),
-                            //       builder: (ctx) =>
-                            //       Container(
-                            //         child: Icon(Icons.location_pin, color: Colors.red, size: 40),
-                            //       ),
-                            //     ),
-                            //   ],
-                            // ),
-                          ],
+                        child: Consumer(builder: (context, ref, child) {
+                          print("move map");
+                          ref.watch(mapControllerProvider);
+                          var location=ref.read(locationProvider.notifier);
+                          return FlutterMap(
+                            mapController: ref.watch(mapControllerProvider),
+                            options: const MapOptions(
+                               initialCenter: LatLng(
+                          17.4065, 78.4772),
+                            
+                            ),
+                            children: [
+                              TileLayer(
+                                  urlTemplate:
+                                      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                                 ),
+                              MarkerLayer(
+                                markers: [
+                                  Marker(
+                                    width: 80.0,
+                                    height: 80.0,
+                                    point:location.state != null ? LatLng(location.state!.latitude!,location.state!.longitude!):LatLng(0.0,0.0),
+                                    child: 
+                                    Container(
+                                      child: Icon(Icons.location_pin, color: Colors.red, size: 40),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          );
+                        },
+                         
                         ),
                       ),
                     ],
@@ -605,17 +657,33 @@ class _AddVendorState extends State<AddVendor> {
                   onPressed: loading
                       ? null
                       : () async {
+                        print("button pressed");
+ bool isFormValid = _formKey.currentState!.validate();
+  print("Form valid: $isFormValid");
+
+  // Check if image is picked and print it
+  bool isImagePicked = pickedImage != null;
+  print("Image picked: $isImagePicked");
                           if (_formKey.currentState!.validate() &&
                               pickedImage != null) {
+                                print("form is validated");
                             // If the form is valid, proceed with the login process
 
                             final UserResult result = await ref
                                 .read(usersProvider.notifier)
                                 .addUser(
                                     pickedImage,
-                                    selection.name.text,
-                                    selection.email.text,
+                                    selection.venderName.text,
+                                    selection.venderEmail.text,
                                     selection.gender,
+                                    selection.venderContact.text,
+                                    selection.venderAD1.text,
+                                    selection.venderAD2.text,
+                                    "${ref.read(locationProvider.notifier).state!.latitude!},${ref.read(locationProvider.notifier).state!.longitude!}",
+                                    selection.venderContact.text,
+                                    selection.venderState.text,
+                                    selection.venderCity.text,
+                                    selection.vendorPincode.text,
                                     ref);
                             if (result.statusCode == 201) {
                               showDialog(
@@ -641,21 +709,13 @@ class _AddVendorState extends State<AddVendor> {
                                               color: Color(0XFF6418C3)),
                                           const SizedBox(height: 15),
                                           const Text(
-                                            'Suresh Ramesh has been successfully added as a user.',
+                                            'Registration sucessfull',
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontSize: 16,
                                             ),
                                           ),
-                                          const SizedBox(height: 15),
-                                          const Text(
-                                            'Login details have been mailed to the user.',
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              color: Colors.grey,
-                                              fontSize: 14,
-                                            ),
-                                          ),
+                                         
                                           const SizedBox(height: 20),
                                           CustomElevatedButton(
                                             text: "OK",
@@ -665,10 +725,7 @@ class _AddVendorState extends State<AddVendor> {
                                             backGroundColor:
                                                 const Color(0XFF6418C3),
                                             onPressed: () {
-                                              ref
-                                                  .read(pageIndexProvider
-                                                      .notifier)
-                                                  .setPage(0);
+                                              Navigator.pop(context);
                                             },
                                           ),
                                         ],
@@ -683,7 +740,7 @@ class _AddVendorState extends State<AddVendor> {
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
-                                    title: const Text('Login Error'),
+                                    title: const Text('Register Error'),
                                     content: Text(result.errorMessage ??
                                         'An unknown error occurred.'),
                                     actions: <Widget>[

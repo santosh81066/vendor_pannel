@@ -184,6 +184,10 @@ class _LoginPageState extends State<LoginPage> {
                             ref
                                 .read(selectionModelProvider.notifier)
                                 .toggleLogin(true);
+                                if(_enteredPassword.text.isNotEmpty || _enteredPassword.text!=""){
+                                  login.vendorLogin(ref,password:_enteredPassword.text  ,username:_enterEmail.text );
+                                }
+                                
                           }
                         }
                       },
@@ -202,7 +206,9 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(
               height: 5,
             ),
-            TextButton(onPressed: () {}, child: const Text('Get Started'))
+            TextButton(onPressed: () {
+              Navigator.of(context).pushNamed("addvendor");
+            }, child: const Text('Get Started'))
           ],
         ),
       ),

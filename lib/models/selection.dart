@@ -31,7 +31,7 @@ class SelectionModel {
   final TextEditingController venderAD2;
   final TextEditingController venderState;
   final TextEditingController venderCity;
-  final TextEditingController vendeerPincode;
+  final TextEditingController vendorPincode;
   final TextEditingController adminEmail;
   final TextEditingController adminPassword;
 
@@ -65,7 +65,7 @@ class SelectionModel {
     TextEditingController? venderAD2,
     TextEditingController? venderState,
     TextEditingController? venderCity,
-    TextEditingController? vendeerPincode,
+    TextEditingController? vendorPincode,
     TextEditingController? adminEmail,
     TextEditingController? adminPassword,
   })  : email = email ?? TextEditingController(),
@@ -84,7 +84,7 @@ class SelectionModel {
         venderAD2 = venderAD2 ?? TextEditingController(),
         venderState = venderState ?? TextEditingController(),
         venderCity = venderCity ?? TextEditingController(),
-        vendeerPincode = vendeerPincode ?? TextEditingController(),
+        vendorPincode = vendorPincode ?? TextEditingController(),
         adminEmail = adminEmail ?? TextEditingController(),
         adminPassword = adminPassword ?? TextEditingController();
 
@@ -104,7 +104,7 @@ class SelectionModel {
       TextEditingController? venderAD2,
       TextEditingController? venderState,
       TextEditingController? venderCity,
-      TextEditingController? vendeerPincode,
+      TextEditingController? vendorPincode,
        TextEditingController? adminEmail,
       TextEditingController? adminPassword
 }) {
@@ -138,7 +138,7 @@ class SelectionModel {
         venderAD2: venderAD2??this.venderAD2,
         venderState: venderState??this.venderState,
         venderCity: venderCity??this.venderCity,
-        vendeerPincode: vendeerPincode??this.vendeerPincode,
+        vendorPincode: vendorPincode??this.vendorPincode,
         adminEmail: adminEmail??this.adminEmail,
         adminPassword: adminPassword??this.adminPassword
 

@@ -170,7 +170,7 @@ void setSub(String gender) {
         .copyWith(); // This is a hacky way to force a rebuild. Consider better state management for TextEditingController.
   }
   void updateVenderPincode(String newText) {
-       state.vendeerPincode.text =
+       state.vendorPincode.text =
         newText; 
         
     state = state
