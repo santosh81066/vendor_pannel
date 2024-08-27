@@ -1,61 +1,69 @@
-class AdminAuth {
-  final String? token;
-  final String? username;
-  final String? email;
-  final String? mobileno;
-  final String? usertype;
+class AuthState {
+  late final String? profilePic;
+  late final String? username;
+  late final String? email;
+  late final String? mobileno;
+  late final String? gender;
+  late final String? token;
+  late final String? usertype;
 
-  // Default constructor with all fields optional and initially set to null
-  AdminAuth({
-    this.token,
+  AuthState({
+    this.profilePic,
     this.username,
     this.email,
     this.mobileno,
+    this.gender,
+    this.token,
     this.usertype,
   });
 
-  // Factory constructor to initialize all fields with default values
-  factory AdminAuth.initial() {
-    return AdminAuth(
-      token: '',
-      username: '',
-      email: '',
-      mobileno: '',
-      usertype: '',
-    );
-  }
-
-  // Method to create a new instance with modified fields
-  AdminAuth copyWith({
-    String? token,
-    String? username,
-    String? email,
-    String? mobileno,
-    String? usertype,
-  }) {
-    return AdminAuth(
-      token: token ?? this.token,
-      username: username ?? this.username,
-      email: email ?? this.email,
-      mobileno: mobileno ?? this.mobileno,
-      usertype: usertype ?? this.usertype,
-    );
-  }
-
-  // Constructor to create an instance from a JSON object
-  AdminAuth.fromJson(Map<String, dynamic> json)
-    : token = json['token'] as String?,
+  AuthState.fromJson(Map<String, dynamic> json)
+    : profilePic = json['profile_pic'] as String?,
       username = json['username'] as String?,
       email = json['email'] as String?,
       mobileno = json['mobileno'] as String?,
+      gender = json['gender'] as String?,
+      token = json['token'] as String?,
       usertype = json['usertype'] as String?;
 
-  // Method to convert an instance to a JSON object
   Map<String, dynamic> toJson() => {
-    'token' : token,
-    'username' : username,
-    'email' : email,
-    'mobileno' : mobileno,
-    'usertype' : usertype,
+    'profile_pic': profilePic,
+    'username': username,
+    'email': email,
+    'mobileno': mobileno,
+    'gender': gender,
+    'token':token,
+    'usertype':usertype
   };
+
+  AuthState copyWith({
+    String? profilePic,
+    String? username,
+    String? email,
+    String? mobileno,
+    String? gender,
+    String? token,
+    String? usertype,
+  }) {
+    return AuthState(
+      profilePic: profilePic ?? this.profilePic,
+      username: username ?? this.username,
+      email: email ?? this.email,
+      mobileno: mobileno ?? this.mobileno,
+      gender: gender ?? this.gender,
+      token: token ?? this.token,
+      usertype: usertype ?? this.usertype,
+    );
+  }
+AuthState clear() {
+    return AuthState(
+      profilePic: null,
+      username: null,
+      email: null,
+      mobileno: null,
+      gender: null,
+      token: null,
+      usertype: null,
+    );
+  }
 }

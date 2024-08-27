@@ -1,161 +1,131 @@
-import 'dart:convert';
-
-import 'package:vendor_pannel/views/manageproperties.dart';
-
-import 'providers/authprovider.dart';
-import 'views/addsubscriber.dart';
-import 'views/adduser.dart';
-import 'views/addvendors.dart';
-import 'views/alltransactions.dart';
-
-import 'views/editprofile.dart';
-import 'views/editsubscriber.dart';
-import 'views/edituser.dart';
-import 'views/example.dart';
-import 'views/loginpage.dart';
-
-import 'views/uploadcoverpage.dart';
-import 'views/uploadphoto.dart';
-import 'views/managebookings.dart';
+import 'package:banquetbookz_vendor/Colors/coustcolors.dart';
+import 'package:banquetbookz_vendor/Providers/auth.dart';
+import 'package:banquetbookz_vendor/Screens/addproperty.dart';
+import 'package:banquetbookz_vendor/Screens/alltransactions.dart';
+import 'package:banquetbookz_vendor/Screens/bookingdetails.dart';
+import 'package:banquetbookz_vendor/Screens/dashboard.dart';
+import 'package:banquetbookz_vendor/Screens/editprofile.dart';
+import 'package:banquetbookz_vendor/Screens/forgotpassword.dart';
+import 'package:banquetbookz_vendor/Screens/login.dart';
+import 'package:banquetbookz_vendor/Screens/manage.dart';
+import 'package:banquetbookz_vendor/Screens/managebookinng.dart';
+import 'package:banquetbookz_vendor/Screens/manageproperty.dart';
+import 'package:banquetbookz_vendor/Screens/registration.dart';
+import 'package:banquetbookz_vendor/Screens/sales.dart';
+import 'package:banquetbookz_vendor/Screens/settings.dart';
+import 'package:banquetbookz_vendor/Screens/subscription_screen.dart';
+import 'package:banquetbookz_vendor/Widgets/bottomnavigation.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-    WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]).then((value) =>   runApp(const ProviderScope(child: MyApp())));
-
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(ProviderScope(child: const MyApp()));
 }
 
-class MyApp extends ConsumerStatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  @override
-  ConsumerState<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends ConsumerState<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Banquetbookz Vendor',
       theme: ThemeData(
-         appBarTheme: AppBarTheme(
-      iconTheme: IconThemeData(color:  Color(0xFF6418c3)),
-      backgroundColor: Color(0xFFeef0f5) ,  // All AppBars in the app will apply this color to icons
-    ),
-        
-        primaryColor: const Color(0xFF6418C3), // Email / Username icon color
-        // hintColor: Color(0xFF000), // Used for the 'Delete Plan' button
-        // backgroundColor: Color(0xFFE0E0E0), // Background color of input fields
-        
-        // Define the default font family.
-        fontFamily: 'Montserrat',
-
-        // Define the default TextTheme. Use this to specify the default
-        // text styling for headlines, titles, bodies of text, and more.
-        
-
-        // Define the default button theme
-        buttonTheme: const ButtonThemeData(
-          buttonColor: Color(0xFF6418c3), // Login button color
-          textTheme: ButtonTextTheme.primary,
-        ),
-
-        // Other customizations like input decoration, etc.
-       
-      
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff6418c3)),
-        scaffoldBackgroundColor: Color(0xFFeef0f5) ,
-        useMaterial3: true,
-      ),
-      // home: Consumer(builder: (context, ref, child) {
-      //   final authState=ref.read(authProvider);
-      //   print("access_token:${authState.data==null?"": authState.data!.accessToken??""}");
-      //   return FutureBuilder(
-      //     future:ref.read(authProvider.notifier).isAuthenticated(),
-      //     builder: (context, snapshot) {
-      //       print('future builder${snapshot.data}');
-      //       // Check the authentication status
-      //       if (snapshot.connectionState == ConnectionState.done) {
-      //         if (snapshot.data == true) {
-      //           // If the user is logged in, go to the main page
-      //           return  const DashboardWidget();
-      //         } else {
-      //           // If the user is not logged in, go to the login page
-      //           return LoginPage();
-      //         }
-      //       } else {
-      //         // Show a loading spinner while checking authentication status
-      //         return const CircularProgressIndicator();
-      //       }
-      //     },
-      //   );}
-      // ),
-      
-      routes:{
+          useMaterial3: true,
+          fontFamily: 'Roboto', // Set the default font family
+          scaffoldBackgroundColor: CoustColors.colrScaffoldbg,
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              maximumSize: Size.fromWidth(double.infinity),
+              disabledForegroundColor: CoustColors.colrEdtxt4,
+              disabledBackgroundColor: CoustColors.colrButton1,
+              foregroundColor: CoustColors.colrEdtxt4,
+              backgroundColor: CoustColors.colrButton1,
+            ),
+          ),
+          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+            selectedItemColor: CoustColors.colrButton3,
+            unselectedItemColor: CoustColors.colrSubText,
+            type: BottomNavigationBarType.fixed,
+          )),
+      routes: {
         '/': (context) {
-                  return Consumer(
-                    builder: (context, ref, child) {
-                      ref.watch(authProvider);
-                     
+          return Consumer(
+            builder: (context, ref, child) {
+              final authState = ref.watch(authprovider);
+              // Check if the user is authenticated and profile is complete
 
-                      // If the user is not authenticated, attempt auto-login
-                      return FutureBuilder(
-                        future: ref.read(authProvider.notifier).isAuthenticated(),
-                        builder: (context, snapshot) {
-                           print("snapshot data at top of builder:${snapshot.data}");
-                        
-                            print("snapshot data:${snapshot.data}");
-                            // Based on auto-login result, navigate to appropriate screen
-                            return snapshot.data == true
-                                ? const DashboardWidget()
-                                : const LoginPage();
-                          
-                        },
-                      );
-                    },
-                  );
+              // If the user is not authenticated, attempt auto-login
+              return FutureBuilder(
+                future: ref.watch(authprovider.notifier).tryAutoLogin(),
+                builder: (context, snapshot) {
+                  print("print circular");
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                        child:
+                            CircularProgressIndicator()); // Show SplashScreen while waiting
+                  } else {
+                    // Based on auto-login result, navigate to appropriate screen
+                    return snapshot.data == true
+                        ? CoustNavigation() //Welcome page
+                        : LoginScreen(); //Login page
+                  }
                 },
-         'loginpage': (context) => LoginPage(),       
-        // // "mainpage":(context) => const MainPage(),
-        // "uploadphoto":(context) =>  UploadPhoto(),
-         "coverpage":(context) =>  UploadCoverPage(),
-         "dashboard":(context) =>  const DashboardWidget(),
-        // "users":(context) =>  const ManageBookings(),
-        // "adduser":(context) =>  const AddUser(),
-          "addvendor":(context) =>  const AddVendor(),
-        // "edituser":(context) =>  EditUser(),
-        // "alltransactions":(context) =>  const AllTransactions(),
-        // "editsubscriber":(context) =>   EditSubscriber(),
-        // "addsubscriber":(context) =>  const AddSubscriber(),
-        // "editprofile":(context) =>  const EditProfile(),
-        "manageproperties":(context) =>  const ManageProperties(),
-        
-      } ,
-      
+              );
+            },
+          );
+        },
+        '/forgotpwd': (BuildContext context) {
+          return const ForgotpasswordScreen();
+        },
+        '/registration': (BuildContext context) {
+          return const RegistrationScreen();
+        },
+        '/welcome': (BuildContext context) {
+          //welcome page
+          return const CoustNavigation();
+        },
+        '/home': (BuildContext context) {
+          //welcome page
+          return const DashboardScreen();
+        },
+        '/manage': (BuildContext context) {
+          //welcome page
+          return const ManageScreen();
+        },
+        '/sales': (BuildContext context) {
+          //welcome page
+          return const SalesScreen();
+        },
+        '/settings': (BuildContext context) {
+          //welcome page
+          return const SettingsScreen();
+        },
+        '/managebooking': (BuildContext context) {
+          return const ManageBookingScreen();
+        },
+        '/bookingdetails': (BuildContext context) {
+          return const BookingDetailsScreen();
+        },
+        '/manageproperty': (BuildContext context) {
+          return const ManagePropertyScreen();
+        },
+        '/addproperty': (BuildContext context) {
+          return const AddPropertyScreen();
+        },
+        '/alltransactions': (BuildContext context) {
+          return const TransactionsScreen();
+        },
+        '/editprofile': (BuildContext context) {
+          return const EditprofileSceren();
+        },
+        '/subscriptionScreen': (BuildContext context) {
+          return const Subscription();
+        }
+      },
     );
   }
 }
-
