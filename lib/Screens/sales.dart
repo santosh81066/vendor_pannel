@@ -1,6 +1,6 @@
-import 'package:banquetbookz_vendor/Colors/coustcolors.dart';
-import 'package:banquetbookz_vendor/Models/bookinglistmodel.dart';
-import 'package:banquetbookz_vendor/Widgets/text.dart';
+import 'package:vendor_pannel/Colors/coustcolors.dart';
+import 'package:vendor_pannel/Models/bookinglistmodel.dart';
+import 'package:vendor_pannel/Widgets/text.dart';
 import 'package:flutter/material.dart';
 
 class SalesScreen extends StatefulWidget {

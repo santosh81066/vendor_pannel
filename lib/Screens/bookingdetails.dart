@@ -1,7 +1,7 @@
-import 'package:banquetbookz_vendor/Colors/coustcolors.dart';
-import 'package:banquetbookz_vendor/Providers/stateproviders.dart';
-import 'package:banquetbookz_vendor/Widgets/elevatedbutton.dart';
-import 'package:banquetbookz_vendor/Widgets/text.dart';
+import 'package:vendor_pannel/Colors/coustcolors.dart';
+import 'package:vendor_pannel/Providers/stateproviders.dart';
+import 'package:vendor_pannel/Widgets/elevatedbutton.dart';
+import 'package:vendor_pannel/Widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

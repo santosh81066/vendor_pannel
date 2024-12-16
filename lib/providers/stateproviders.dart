@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:banquetbookz_vendor/Colors/coustcolors.dart';
+import 'package:vendor_pannel/Colors/coustcolors.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 

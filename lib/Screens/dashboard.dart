@@ -1,4 +1,4 @@
-import 'package:banquetbookz_vendor/Colors/coustcolors.dart';
+import 'package:vendor_pannel/Colors/coustcolors.dart';
 import 'package:flutter/material.dart';
 
 class DashboardScreen extends StatefulWidget{

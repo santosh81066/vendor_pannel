@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:banquetbookz_vendor/utils/bbapi.dart';
+import 'package:vendor_pannel/utils/bbapi.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:banquetbookz_vendor/Models/registrationstatemodel.dart';
+import 'package:vendor_pannel/Models/registrationstatemodel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class RegistrationNotifier extends StateNotifier<RegistrationState> {

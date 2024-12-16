@@ -1,11 +1,11 @@
-import 'package:banquetbookz_vendor/Colors/coustcolors.dart';
-import 'package:banquetbookz_vendor/Models/new_subscriptionplan.dart';
-import 'package:banquetbookz_vendor/Providers/property_repository.dart';
-import 'package:banquetbookz_vendor/Widgets/tabbar.dart';
-import 'package:banquetbookz_vendor/Widgets/text.dart';
+import 'package:vendor_pannel/Colors/coustcolors.dart';
+import 'package:vendor_pannel/Models/new_subscriptionplan.dart';
+import 'package:vendor_pannel/Providers/property_repository.dart';
+import 'package:vendor_pannel/Widgets/tabbar.dart';
+import 'package:vendor_pannel/Widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:banquetbookz_vendor/Models/get_properties_model.dart';
+import 'package:vendor_pannel/Models/get_properties_model.dart';
 
 class ManagePropertyScreen extends ConsumerStatefulWidget {
   const ManagePropertyScreen({super.key});

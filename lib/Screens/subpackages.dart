@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:banquetbookz_vendor/models/new_subscriptionplan.dart';
+import 'package:vendor_pannel/models/new_subscriptionplan.dart';
 
 class Subpackages extends StatelessWidget {
   final List<SubscriptionPlan> plans;

@@ -1,16 +1,16 @@
 import 'dart:convert';
-import 'package:banquetbookz_vendor/Models/authstate.dart';
-import 'package:banquetbookz_vendor/Providers/phoneauthnotifier.dart';
-import 'package:banquetbookz_vendor/Providers/stateproviders.dart';
-import 'package:banquetbookz_vendor/utils/bbapi.dart';
+import 'package:vendor_pannel/Models/authstate.dart';
+import 'package:vendor_pannel/Providers/phoneauthnotifier.dart';
+import 'package:vendor_pannel/Providers/stateproviders.dart';
+import 'package:vendor_pannel/utils/bbapi.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:banquetbookz_vendor/Widgets/stackwidget.dart';
-import 'package:banquetbookz_vendor/Models/new_subscriptionplan.dart';
-import 'package:banquetbookz_vendor/Providers/auth.dart';
-import 'package:banquetbookz_vendor/Providers/new_subscription_get.dart';
+import 'package:vendor_pannel/Widgets/stackwidget.dart';
+import 'package:vendor_pannel/Models/new_subscriptionplan.dart';
+import 'package:vendor_pannel/Providers/auth.dart';
+import 'package:vendor_pannel/Providers/new_subscription_get.dart';
 
 class Subscription extends ConsumerStatefulWidget {
   const Subscription({super.key});

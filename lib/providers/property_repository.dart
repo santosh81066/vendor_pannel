@@ -1,8 +1,8 @@
-import 'package:banquetbookz_vendor/Providers/auth.dart';
+import 'package:vendor_pannel/Providers/auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:banquetbookz_vendor/Models/get_properties_model.dart';
+import 'package:vendor_pannel/Models/get_properties_model.dart';
 
 class PropertyRepository {
   final Ref ref;

@@ -1,27 +1,27 @@
-import 'package:banquetbookz_vendor/Colors/coustcolors.dart';
-import 'package:banquetbookz_vendor/Providers/auth.dart';
-import 'package:banquetbookz_vendor/Screens/addproperty.dart';
-import 'package:banquetbookz_vendor/Screens/alltransactions.dart';
-import 'package:banquetbookz_vendor/Screens/bookingdetails.dart';
-import 'package:banquetbookz_vendor/Screens/dashboard.dart';
-import 'package:banquetbookz_vendor/Screens/editprofile.dart';
-import 'package:banquetbookz_vendor/Screens/forgotpassword.dart';
-import 'package:banquetbookz_vendor/Screens/login.dart';
-import 'package:banquetbookz_vendor/Screens/manage.dart';
-import 'package:banquetbookz_vendor/Screens/managebookinng.dart';
-import 'package:banquetbookz_vendor/Screens/manageproperty.dart';
-import 'package:banquetbookz_vendor/Screens/registration.dart';
-import 'package:banquetbookz_vendor/Screens/sales.dart';
-import 'package:banquetbookz_vendor/Screens/settings.dart';
-import 'package:banquetbookz_vendor/Screens/subscription_screen.dart';
-import 'package:banquetbookz_vendor/Widgets/bottomnavigation.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:vendor_pannel/Colors/coustcolors.dart';
+import 'package:vendor_pannel/Providers/auth.dart';
+import 'package:vendor_pannel/Screens/addproperty.dart';
+import 'package:vendor_pannel/Screens/alltransactions.dart';
+import 'package:vendor_pannel/Screens/bookingdetails.dart';
+import 'package:vendor_pannel/Screens/dashboard.dart';
+import 'package:vendor_pannel/Screens/editprofile.dart';
+import 'package:vendor_pannel/Screens/forgotpassword.dart';
+import 'package:vendor_pannel/Screens/login.dart';
+import 'package:vendor_pannel/Screens/manage.dart';
+import 'package:vendor_pannel/Screens/managebookinng.dart';       
+import 'package:vendor_pannel/Screens/manageproperty.dart';
+import 'package:vendor_pannel/Screens/registration.dart';
+import 'package:vendor_pannel/Screens/sales.dart';
+import 'package:vendor_pannel/Screens/settings.dart';
+import 'package:vendor_pannel/Screens/subscription_screen.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  // await Firebase.initializeApp();
   runApp(ProviderScope(child: const MyApp()));
 }
 
@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
                   } else {
                     // Based on auto-login result, navigate to appropriate screen
                     return snapshot.data == true
-                        ? CoustNavigation() //Welcome page
+                        ? DashboardScreen() //Welcome page
                         : LoginScreen(); //Login page
                   }
                 },
@@ -86,7 +86,7 @@ class MyApp extends StatelessWidget {
         },
         '/welcome': (BuildContext context) {
           //welcome page
-          return const CoustNavigation();
+          return const DashboardScreen();
         },
         '/home': (BuildContext context) {
           //welcome page

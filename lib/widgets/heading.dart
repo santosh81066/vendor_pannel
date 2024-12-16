@@ -1,4 +1,4 @@
-import 'package:banquetbookz_vendor/Providers/stateproviders.dart';
+import 'package:vendor_pannel/Providers/stateproviders.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

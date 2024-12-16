@@ -1,8 +1,8 @@
-import 'package:banquetbookz_vendor/Models/addpropertymodel.dart';
+import 'package:vendor_pannel/Models/addpropertymodel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:convert';
 import 'dart:io';
-import 'package:banquetbookz_vendor/utils/bbapi.dart';
+import 'package:vendor_pannel/utils/bbapi.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';

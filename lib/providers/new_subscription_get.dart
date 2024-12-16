@@ -1,9 +1,9 @@
-import 'package:banquetbookz_vendor/Providers/auth.dart';
-import 'package:banquetbookz_vendor/models/new_subscriptionplan.dart';
-import 'package:banquetbookz_vendor/providers/authprovider.dart';
+import 'package:vendor_pannel/Providers/auth.dart';
+import 'package:vendor_pannel/models/new_subscriptionplan.dart';
+import 'package:vendor_pannel/providers/authprovider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:convert';
-import 'package:banquetbookz_vendor/utils/bbapi.dart';
+import 'package:vendor_pannel/utils/bbapi.dart';
 import 'package:http/http.dart' as http;
 
 class SubscriptionRepository {

@@ -1,7 +1,7 @@
-import 'package:banquetbookz_vendor/Screens/dashboard.dart';
-import 'package:banquetbookz_vendor/Screens/manage.dart';
-import 'package:banquetbookz_vendor/Screens/sales.dart';
-import 'package:banquetbookz_vendor/Screens/settings.dart';
+import 'package:vendor_pannel/Screens/dashboard.dart';
+import 'package:vendor_pannel/Screens/manage.dart';
+import 'package:vendor_pannel/Screens/sales.dart';
+import 'package:vendor_pannel/Screens/settings.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
