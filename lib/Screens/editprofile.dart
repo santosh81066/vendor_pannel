@@ -15,7 +15,7 @@ class EditprofileSceren extends StatefulWidget{
 
 class _EditprofileScerenState extends State<EditprofileSceren> {
   
-   final TextEditingController name = TextEditingController();
+  final TextEditingController name = TextEditingController();
   final TextEditingController emailid = TextEditingController();
   final TextEditingController pwd = TextEditingController();
   final TextEditingController mobile = TextEditingController();

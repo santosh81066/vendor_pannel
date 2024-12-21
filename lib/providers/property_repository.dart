@@ -10,7 +10,7 @@ class PropertyRepository {
   final String _baseUrl = 'http://93.127.172.164:8080/api/properties/';
 
   Future<List<Property>> fetchProperties() async {
-    final getaccesstoken = ref.read(authprovider).token;
+    final getaccesstoken = ref.read(authprovider).data?.accessToken;
 
     try {
       final response = await http.get(

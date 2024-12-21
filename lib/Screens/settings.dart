@@ -2,17 +2,21 @@ import 'package:vendor_pannel/Colors/coustcolors.dart';
 import 'package:vendor_pannel/Widgets/text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import "package:vendor_pannel/providers/auth.dart";
 
-class SettingsScreen extends StatefulWidget {
+class SettingsScreen extends ConsumerStatefulWidget {
   const SettingsScreen({super.key});
 
   @override
-  State<SettingsScreen> createState() => SettingsScreenState();
+  ConsumerState<SettingsScreen> createState() => SettingsScreenState();
 }
 
-class SettingsScreenState extends State<SettingsScreen> {
+class SettingsScreenState extends ConsumerState<SettingsScreen> {
+      
   @override
+
   Widget build(BuildContext context) {
+    final logout = ref.watch(authprovider.notifier);
     return Scaffold(
       backgroundColor: CoustColors.colrFill,
       body: Consumer(
@@ -73,14 +77,22 @@ class SettingsScreenState extends State<SettingsScreen> {
                 const SizedBox(
                   height: 10,
                 ),
-                ListTile(
-                  title: const coustText(sName: 'Logout'),
-                  onTap: () {
-                    // Handle edit profile action
-                  },
-                ),
-                      ],
-                    )),
+               TextButton(
+                    onPressed: () async {
+                      final shouldLogout = await _showLogoutConfirmation(context);
+                      if (shouldLogout == true) {
+                        await logout.logoutUser();  // Call logout function
+                        Navigator.of(context).pushReplacementNamed('/login');  // Navigate to the login screen after logout
+                      }
+                    },
+                    child: const Text(
+                      "Logout",
+                      style: TextStyle(color: Color(0xff000000), fontSize: 15),
+                    ),
+                  ),
+
+                  ],
+                )),
                 
               ],
             ),
@@ -90,3 +102,30 @@ class SettingsScreenState extends State<SettingsScreen> {
     );
   }
 }
+Future<bool?> _showLogoutConfirmation(BuildContext context) {
+  return showDialog<bool>(
+    context: context,
+    barrierDismissible: false, // Prevent dismissing by tapping outside
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text("Confirm Logout"),
+        content: const Text("Are you sure you want to logout?"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(false); // Return false if canceled
+            },
+            child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop(true); // Return true if confirmed
+            },
+            child: const Text("OK", style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      );
+    },
+  );
+}
+

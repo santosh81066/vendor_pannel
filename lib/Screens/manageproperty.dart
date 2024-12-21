@@ -1,6 +1,6 @@
 import 'package:vendor_pannel/Colors/coustcolors.dart';
 import 'package:vendor_pannel/Models/new_subscriptionplan.dart';
-import 'package:vendor_pannel/Providers/property_repository.dart';
+import 'package:vendor_pannel/providers/property_repository.dart';
 import 'package:vendor_pannel/Widgets/tabbar.dart';
 import 'package:vendor_pannel/Widgets/text.dart';
 import 'package:flutter/material.dart';

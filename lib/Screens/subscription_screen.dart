@@ -10,7 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vendor_pannel/Widgets/stackwidget.dart';
 import 'package:vendor_pannel/Models/new_subscriptionplan.dart';
 import 'package:vendor_pannel/Providers/auth.dart';
-import 'package:vendor_pannel/Providers/new_subscription_get.dart';
+import 'package:vendor_pannel/providers/new_subscription_get.dart';
 
 class Subscription extends ConsumerStatefulWidget {
   const Subscription({super.key});
@@ -218,3 +218,4 @@ class _SubscriptionState extends ConsumerState<Subscription> {
     );
   }
 }
+

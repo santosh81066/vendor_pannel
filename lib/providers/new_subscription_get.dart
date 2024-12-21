@@ -15,7 +15,7 @@ class SubscriptionRepository {
   Future<List<SubscriptionPlan>> fetchSubscriptionPlans() async {
     try {
       final authState = ref.watch(authprovider); // Accessing the AuthNotifier
-      final token = authState.token;
+      final token = authState.data?.accessToken;
 
       final response = await http.get(
         Uri.parse(_baseUrl),

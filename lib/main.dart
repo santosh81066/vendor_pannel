@@ -1,4 +1,5 @@
 import 'package:vendor_pannel/Colors/coustcolors.dart';
+import "package:vendor_pannel/widgets/bottomnavigation.dart";
 import 'package:vendor_pannel/Providers/auth.dart';
 import 'package:vendor_pannel/Screens/addproperty.dart';
 import 'package:vendor_pannel/Screens/alltransactions.dart';
@@ -55,9 +56,25 @@ class MyApp extends StatelessWidget {
         '/': (context) {
           return Consumer(
             builder: (context, ref, child) {
-              final authState = ref.watch(authprovider);
+               final authState = ref.watch(authprovider);
+              print("this is the main page--------");
+             
               // Check if the user is authenticated and profile is complete
-
+             if(authState.data?.userStatus==true){
+                                    showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            title: const Text('userstatus'),
+                                            content: Text(" userStatus is true "), // Default message
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.of(context).pop(),
+                                                child: const Text('OK'),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+             }
               // If the user is not authenticated, attempt auto-login
               return FutureBuilder(
                 future: ref.watch(authprovider.notifier).tryAutoLogin(),
@@ -69,8 +86,8 @@ class MyApp extends StatelessWidget {
                             CircularProgressIndicator()); // Show SplashScreen while waiting
                   } else {
                     // Based on auto-login result, navigate to appropriate screen
-                    return snapshot.data == true
-                        ? DashboardScreen() //Welcome page
+                    return snapshot.data == true && authState.data?.userRole == "v" && authState.data?.userStatus==true
+                        ? CoustNavigation() //Welcome page
                         : LoginScreen(); //Login page
                   }
                 },
@@ -86,7 +103,7 @@ class MyApp extends StatelessWidget {
         },
         '/welcome': (BuildContext context) {
           //welcome page
-          return const DashboardScreen();
+          return const CoustNavigation();
         },
         '/home': (BuildContext context) {
           //welcome page
@@ -124,6 +141,9 @@ class MyApp extends StatelessWidget {
         },
         '/subscriptionScreen': (BuildContext context) {
           return const Subscription();
+        },
+        '/login':(BuildContext context) {
+          return const LoginScreen();
         }
       },
     );

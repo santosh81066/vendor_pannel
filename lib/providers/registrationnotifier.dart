@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:vendor_pannel/Models/registrationstatemodel.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import "package:vendor_pannel/Screens/registration.dart";
 
 class RegistrationNotifier extends StateNotifier<RegistrationState> {
   RegistrationNotifier() : super(RegistrationState());
@@ -16,135 +17,108 @@ class RegistrationNotifier extends StateNotifier<RegistrationState> {
     state = state.copyWith(propertyImage: image);
   }
 
-  Future<void> register(
-    BuildContext context,
-    WidgetRef ref,
-    String? username,
-    String? email,
-    String? password,
-    String? contactNumber,
-    String? address1,
-    String? address2,
-    String? location,
-    String? state,
-    String? city,
-    String? pincode,
-    String? profilepic,
-    String? propertypic,
-    String? propertyName, // New field
-    String? category, // New field
-    String? startTime, // New field
-    String? endTime, // New field
-  ) async {
-    Uri url = Uri.parse(Bbapi.registration);
+ Future<void> register(
+  BuildContext context,
+  WidgetRef ref,
+  String? username,
+  String? email,
+  String? password,
+  String? contactNumber,
+  File? profileImage,
+  String timezone, // Add timezone as a parameter
+) async {
+  Uri url = Uri.parse(Bbapi.registration);
+  print("Registration Data: $username, $email, $password, $contactNumber");
+  print("time----zone:$timezone");
 
+  try {
     final request = http.MultipartRequest('POST', url);
 
-    // Add the image files to the request
-    if (propertypic != null) {
-      request.files.add(await http.MultipartFile.fromPath(
-        'property.property_pic',
-        propertypic,
-      ));
-    }
-    if (profilepic != null) {
-      request.files.add(await http.MultipartFile.fromPath(
-        'profile_pic',
-        profilepic,
-      ));
+    if (profileImage != null) {
+      print("Uploading profile image: ${profileImage.path}");
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'profilepic',
+          profileImage.path,
+        ),
+      );
+    } else {
+      print("No profile image selected");
     }
 
-    // Add the text fields to the request
-    request.fields['username'] = username ?? '';
-    request.fields['email'] = email ?? '';
-    request.fields['password'] = password ?? '';
-    request.fields['mobileno'] = contactNumber ?? '';
-    request.fields['property.address_1'] = address1 ?? '';
-    request.fields['property.address_2'] = address2 ?? '';
-    request.fields['property.location'] = location ?? '';
-    request.fields['property.state'] = state ?? '';
-    request.fields['property.city'] = city ?? '';
-    request.fields['property.pincode'] = pincode ?? '';
-    request.fields['property.property_name'] = propertyName ?? '';
-    request.fields['property.category'] = category ?? '';
+    final data = {
+      "username": username ?? '',
+      "mobileno": contactNumber ?? '',
+      "email": email ?? '',
+      "role": "v",
+      "userstatus": "1",
+      "password": password ?? '',
+      "timezone": timezone, // Include the timezone in the payload
+    };
 
-    if (category != null) {
-      // Ensure that the category is converted to an integer if required
-      request.fields['property.category'] =
-          category; // Adjust if it should be an integer
-    }
-    request.fields['property.start_time'] = startTime ?? '';
-    request.fields['property.end_time'] = endTime ?? '';
+    request.fields.addAll({
+      "attributes": json.encode(data),
+    });
 
-    try {
-      // Send the request
-      final response = await request.send();
-      final responseBody = await response.stream.bytesToString();
-      final responseData = json.decode(responseBody);
+    final response = await request.send();
+    final responseBody = await response.stream.bytesToString();
+    print("Response Status Code: ${response.statusCode}");
+    print("Response Body: $responseBody");
 
-      if (response.statusCode == 201) {
-        // Handle the response data
-        print(responseData);
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Success'),
-              content: const Text('Registration successful'),
-              actions: [
-                ElevatedButton(
-                  child: const Text('OK'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-        Navigator.of(context)
-            .pushNamed('/'); // Go to Login page if registered successfully
-      } else {
-        // Handle the error
-        print('Registration failed with status: ${responseBody}');
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Error'),
-              content: Text(
-                  'Registration failed: ${responseData['message'] ?? 'Unknown error'}'),
-              actions: [
-                ElevatedButton(
-                  child: const Text('OK'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
-      }
-    } catch (e) {
-      print('An error occurred: $e');
+    if (response.statusCode == 201) {
+      // Registration successful
       showDialog(
         context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Error'),
-            content: Text('An error occurred: $e'),
-            actions: [
-              ElevatedButton(
-                child: const Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
+        builder: (context) => AlertDialog(
+          title: const Text('Success'),
+          content: const Text('Registration successful'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                 Navigator.of(context).pushReplacementNamed('/login'); 
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    } else {
+      // Registration failed
+      final errorMessage =
+          json.decode(responseBody)['messages']?.join(', ') ?? "Unknown error";
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Error'),
+          content: Text('Registration failed: $errorMessage'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
       );
     }
+  } catch (e) {
+    print("Error during registration: $e");
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Error'),
+        content: Text('An error occurred: $e'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
+}
+
+
+
 }
