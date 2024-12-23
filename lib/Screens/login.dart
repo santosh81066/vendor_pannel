@@ -135,28 +135,31 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                           ),
                                         );
                                       } 
-                                      else if ((result.statusCode == 200 || result.statusCode == 201) &&
-                                          result.responseBody?['data']?['user_status'] == true) {
-                                        // Check if the user has a valid status and role
-                                        if (result.responseBody?['data']?['user_role'] == "v") {
-                                          Navigator.of(context).pushNamed('/welcome'); // Navigate to the welcome page
-                                        } else {
-                                          // User is not a vendor
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) => AlertDialog(
-                                              title: const Text('Login Error'),
-                                              content: const Text("You are not a vendor"),
-                                              actions: [
-                                                TextButton(
-                                                  onPressed: () => Navigator.of(context).pop(),
-                                                  child: const Text('OK'),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        }
-                                      } 
+                                      else{
+                                        Navigator.of(context).pushNamed('/welcome'); // Navigate to the welcome page
+                                      }
+                                      // else if ((result.statusCode == 200 || result.statusCode == 201) &&
+                                      //     result.responseBody?['data']?['user_status'] == true) {
+                                      //   // Check if the user has a valid status and role
+                                      //   if (result.responseBody?['data']?['user_role'] == "v") {
+                                      //     Navigator.of(context).pushNamed('/welcome'); // Navigate to the welcome page
+                                      //   } else {
+                                      //     // User is not a vendor
+                                      //     showDialog(
+                                      //       context: context,
+                                      //       builder: (context) => AlertDialog(
+                                      //         title: const Text('Login Error'),
+                                      //         content: const Text("You are not a vendor"),
+                                      //         actions: [
+                                      //           TextButton(
+                                      //             onPressed: () => Navigator.of(context).pop(),
+                                      //             child: const Text('OK'),
+                                      //           ),
+                                      //         ],
+                                      //       ),
+                                      //     );
+                                      //   }
+                                      // } 
                                       // else {
                                       //   // If user services are deactivated
                                       //   showDialog(
