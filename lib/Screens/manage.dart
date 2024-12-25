@@ -67,7 +67,7 @@ class _ManageScreenState extends State<ManageScreen> {
                         items(
                           "Manage Calander",
                           Icons.calendar_today,
-                          onTap: () {},
+                          onTap: () {Navigator.of(context).pushNamed('/manageCalendar');},
                         ),
                         const SizedBox(height: 10,),
                       ],

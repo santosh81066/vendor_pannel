@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import "package:vendor_pannel/widgets/customelevatedbutton.dart";
 import "package:vendor_pannel/widgets/customtextfield.dart";
 
+
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -136,6 +137,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                         );
                                       } 
                                       else{
+                                        // return result.responseBody?['data']?['user_role'] == "v"&&result.responseBody?['data']?['user_status'] == true?
+                                        // Navigator.of(context).pushNamed('/welcome'):;
                                         Navigator.of(context).pushNamed('/welcome'); // Navigate to the welcome page
                                       }
                                       // else if ((result.statusCode == 200 || result.statusCode == 201) &&

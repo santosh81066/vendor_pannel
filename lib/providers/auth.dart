@@ -9,7 +9,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthNotifier extends StateNotifier<AdminAuth> {
-  AuthNotifier() : super(AdminAuth());
+  AuthNotifier() : super(AdminAuth.initial());
+  //   _loadUserFromPrefs();
+  // }
+
+
+  // // Load user data from SharedPreferences on startup
+  // Future<void> _loadUserFromPrefs() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   final userData = prefs.getString('userData');
+  //   if (userData != null) {
+  //     final data = json.decode(userData) as Map<String, dynamic>;
+  //     state = AdminAuth.fromJson(data);
+  //     print('User loaded on app startup: ${state.data?.userRole}');
+  //   }
+  // }
 
 
   Future<bool> tryAutoLogin() async {
@@ -59,7 +73,7 @@ class AuthNotifier extends StateNotifier<AdminAuth> {
     responseCode = response.statusCode;
     var responseBody = json.decode(response.body);
     print('Response Code: $responseCode');
-    print('Server Response: $responseBody');
+    print('login Response: $responseBody');
 
     if (responseCode == 200 && responseBody['success'] == true) {
       loadingState.state = false;
@@ -68,8 +82,9 @@ class AuthNotifier extends StateNotifier<AdminAuth> {
       AdminAuth adminAuth = AdminAuth.fromJson(responseBody);
 
       // Update the state with the returned data
-      state = adminAuth;
+      state = adminAuth.copyWith();
       print('State updated with access token: ${adminAuth.data?.accessToken}');
+      print('State updated in adminLogin: ${state.toJson()}');
 
       // Storing data in SharedPreferences
       final prefs = await SharedPreferences.getInstance();

@@ -6,13 +6,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';  // Import the geocoding package
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
+// import 'package:timezone/data/latest.dart' as tz;
+// import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/standalone.dart' as tz;
 import 'package:vendor_pannel/Colors/coustcolors.dart';
 import 'package:vendor_pannel/Models/registrationstatemodel.dart';
 import 'package:vendor_pannel/Providers/registrationnotifier.dart';
 import 'package:vendor_pannel/Providers/stateproviders.dart';
 import 'package:vendor_pannel/Providers/textfieldstatenotifier.dart';
+// import 'package:timezone_to_country/timezone_to_country.dart';
 import 'package:vendor_pannel/Widgets/elevatedbutton.dart';
 import 'package:vendor_pannel/Widgets/text.dart';
 import 'package:vendor_pannel/Widgets/textfield.dart';
@@ -38,7 +40,7 @@ class RegistrationScreenState extends ConsumerState<RegistrationScreen> {
   @override
   void initState() {
     super.initState();
-    tz.initializeTimeZones();
+  
   }
 
   Future<Position> _getCurrentLocation() async {
@@ -68,39 +70,55 @@ class RegistrationScreenState extends ConsumerState<RegistrationScreen> {
 
 
 
-// Updated method to get timezone based on coordinates using geocoding and timezone package
 Future<String> _getTimezoneFromLocation(Position position) async {
   try {
-    // Get the address from the latitude and longitude
+    // Get the country name from latitude and longitude
     List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
-    
-    // Use the locality or country to try and fetch timezone
-    String country = placemarks.first.country ?? "UTC";
-    
-    // We can manually map the country to a known timezone, e.g., "India" -> "Asia/Kolkata"
-    // Consider using a more extensive list or an API for more precise mappings
-    if (country == "India") {
-      return "Asia/Kolkata";
-    } else if (country == "United States") {
-      return "America/New_York";
+    String? country = placemarks.first.country;
+
+    // Check the country and assign the appropriate timezone
+    if (country != null) {
+      switch (country) {
+        case "India":
+          return "Asia/Kolkata";
+        case "United States":
+          return "America/New_York";
+        case "United Kingdom":
+          return "Europe/London";
+        case "Australia":
+          return "Australia/Sydney";
+        case "Japan":
+          return "Asia/Tokyo";
+        default:
+          print("Unknown country: $country. Defaulting to UTC.");
+          return "UTC"; // Default timezone
+      }
     } else {
-      // Fallback to a default timezone, UTC
+      print("Country not found. Defaulting to UTC.");
       return "UTC";
     }
   } catch (e) {
-    print('Error getting timezone: $e');
-    return 'UTC'; // Default to UTC if there is an error
+    print("Error determining timezone: $e");
+    return "UTC"; // Default to UTC if an error occurs
   }
 }
 
+
+
+
   Future<String> getUserTimezone() async {
-    try {
-      Position position = await _getCurrentLocation();
-      return await _getTimezoneFromLocation(position);
-    } catch (e) {
-      return 'UTC'; // Default to UTC if location fetch fails
-    }
+  try {
+    // Get the current location
+    Position position = await _getCurrentLocation();
+
+    // Fetch the timezone based on the location
+    return await _getTimezoneFromLocation(position);
+  } catch (e) {
+    print('Error fetching user timezone: $e');
+    return 'UTC'; // Default to UTC if an error occurs
   }
+}
+
 
   Future<void> _pickImage(BuildContext context, ImageSource source) async {
   try {
