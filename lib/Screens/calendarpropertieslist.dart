@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'package:vendor_pannel/Colors/coustcolors.dart';
 
 
 
@@ -12,322 +14,428 @@ class CalendarPropertiesList extends ConsumerStatefulWidget {
 }
 
 class _CalendarPropertiesListState extends ConsumerState<CalendarPropertiesList> {
- DateTime selectedDate = DateTime.now();
+
   DateTime? fromDate;
   DateTime? toDate;
-  DateTime? hoveredDate;
-  String selectedOption = 'From';
+  DateTime _focusedDay = DateTime.now();
+  DateTime _selectedDay = DateTime.now();
 
-  void _changeMonth(int delta) {
-    setState(() {
-      selectedDate = DateTime(selectedDate.year, selectedDate.month + delta);
-    });
-  }
+  int selectedYear = DateTime.now().year;
+  int selectedMonth = DateTime.now().month;
 
-  List<DateTime> _generateDaysInMonth(DateTime date) {
-    final firstDay = DateTime(date.year, date.month, 1);
-    final lastDay = DateTime(date.year, date.month + 1, 0);
+  final List<int> years = List.generate(101, (index) => 2000 + index);
+  final List<String> months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ];
 
-    final days = <DateTime>[];
-    for (int i = 0; i < firstDay.weekday - 1; i++) {
-      days.add(firstDay.subtract(Duration(days: firstDay.weekday - i - 1)));
-    }
-    for (int i = 0; i < lastDay.day; i++) {
-      days.add(firstDay.add(Duration(days: i)));
-    }
-    for (int i = 1; days.length % 7 != 0; i++) {
-      days.add(lastDay.add(Duration(days: i)));
-    }
-    return days;
-  }
-
-  Future<void> _selectDate(BuildContext context, bool isFrom) async {
+  Future<void> _selectDate(BuildContext context, bool isFromDate) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: selectedDate,
+      initialDate: _focusedDay,
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
+
     if (picked != null) {
       setState(() {
-        if (isFrom) {
+        if (isFromDate) {
+
           fromDate = picked;
         } else {
           toDate = picked;
         }
+
+        selectedYear = picked.year;
+        selectedMonth = picked.month;
+        _focusedDay = DateTime(selectedYear, selectedMonth, picked.day);
       });
     }
   }
 
+  void _updateCalendar() {
+    setState(() {
+      _focusedDay = DateTime(selectedYear, selectedMonth, 1);
+      fromDate = DateTime(selectedYear, selectedMonth, fromDate?.day ?? 1);
+      toDate = DateTime(selectedYear, selectedMonth, toDate?.day ?? 1);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    final days = _generateDaysInMonth(selectedDate);
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Manage Calendar'),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {},
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(30.0),
+        child: AppBar(
+          title: const Text(
+            "Manage Calendar",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          backgroundColor: CoustColors.colrEdtxt2,
+          leading: IconButton(
+            icon: const Icon(
+              Icons.arrow_back,
+              size: 30,
+              color: Colors.white,
+            ),
+            onPressed: () {
+     
+            },
+          ),
         ),
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                padding: EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.3),
-                      blurRadius: 5.0,
-                      spreadRadius: 1.0,
-                    ),
-                  ],
+          padding: const EdgeInsets.all(15.0),
+          child: Container(
+            width: double.infinity, // Make it occupy the full width
+            color: Color.fromRGBO(
+                246, 244, 243, 0.904), // Set the background color
+            padding: EdgeInsets.all(4.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Swagat Grand Banquet Hall',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                const Text(
+                  'Bachupally, Hyderabad',
+                  style: TextStyle(fontSize: 8, color: Colors.grey),
+                ),
+                Row(
                   children: [
-                    Text(
-                      'Swagat Grand Banquet Hall',
-                      style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 4.0),
-                    Text('Bachupally, Hyderabad'),
-                  ],
-                ),
-              ),
-              SizedBox(height: 16.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_left),
-                    onPressed: () => _changeMonth(-1),
-                  ),
-                  Text(
-                    '${DateFormat.MMMM().format(selectedDate)} ${selectedDate.year}',
-                    style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.arrow_right),
-                    onPressed: () => _changeMonth(1),
-                  ),
-                ],
-              ),
-              SizedBox(height: 16.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    children: [
-                      Radio<String>(
-                        value: 'From',
-                        groupValue: selectedOption,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedOption = value!;
-                          });
-                        },
-                      ),
-                      Text('From', style: TextStyle(fontSize: 16.0)),
-                    ],
-                  ),
-                  GestureDetector(
-                    onTap: () => _selectDate(context, true),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                      decoration: BoxDecoration(
-                        border: Border(bottom: BorderSide(color: Colors.purple, width: 2.0)),
-                      ),
-                      child: Text(
-                        fromDate == null
-                            ? 'DD/MM/YYYY'
-                            : DateFormat('dd/MM/yyyy').format(fromDate!),
-                        style: TextStyle(color: Colors.purple),
-                      ),
-                    ),
-                  ),
-                  Column(
-                    children: [
-                      Radio<String>(
-                        value: 'To',
-                        groupValue: selectedOption,
-                        onChanged: (value) {
-                          setState(() {
-                            selectedOption = value!;
-                          });
-                        },
-                      ),
-                      Text('To', style: TextStyle(fontSize: 16.0)),
-                    ],
-                  ),
-                  GestureDetector(
-                    onTap: () => _selectDate(context, false),
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                      decoration: BoxDecoration(
-                        border: Border(bottom: BorderSide(color: Colors.purple, width: 2.0)),
-                      ),
-                      child: Text(
-                        toDate == null
-                            ? 'DD/MM/YYYY'
-                            : DateFormat('dd/MM/yyyy').format(toDate!),
-                        style: TextStyle(color: Colors.purple),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(height: 16.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  for (var day in ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'])
                     Expanded(
-                      child: Center(
-                        child: Text(
-                          day,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
+                      child: DropdownButton<int>(
+                        value: selectedYear,
+                        items: years
+                            .map((year) => DropdownMenuItem(
+                                  value: year,
+                                  child: Text(year.toString()),
+                                ))
+                            .toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedYear = value!;
+                            _updateCalendar();
+                          });
+                        },
                       ),
-                    )
-                ],
-              ),
-              SizedBox(height: 8.0),
-              Container(
-                padding: EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8.0),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.3),
-                      blurRadius: 5.0,
-                      spreadRadius: 1.0,
+                    ),
+                    Expanded(
+                      child: DropdownButton<int>(
+                        value: selectedMonth,
+                        items: List.generate(
+                          months.length,
+                          (index) => DropdownMenuItem(
+                            value: index + 1,
+                            child: Text(months[index]),
+                          ),
+                        ).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedMonth = value!;
+                            _updateCalendar();
+                          });
+                        },
+                      ),
                     ),
                   ],
                 ),
-                child: Column(
+                Row(
                   children: [
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 7,
-                        mainAxisSpacing: 8.0,
-                        crossAxisSpacing: 8.0,
-                        childAspectRatio: 1.0,
-                      ),
-                      itemCount: days.length,
-                      itemBuilder: (context, index) {
-                        final day = days[index];
-                        final isCurrentMonth = day.month == selectedDate.month;
-                        final isHovered = hoveredDate != null && hoveredDate == day;
-                        final isSelected = (fromDate != null && toDate != null && day.isAfter(fromDate!) && day.isBefore(toDate!));
-
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              if (selectedOption == 'From') {
-                                fromDate = day;
-                              } else {
-                                toDate = day;
-                              }
-                            });
-                          },
-                          // onHover: (_) {
-                          //   setState(() {
-                          //     hoveredDate = day;
-                          //   });
-                          // },
-                          child: Container(
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? Colors.purple
-                                  : isHovered
-                                      ? Colors.purple.withOpacity(0.3)
-                                      : isCurrentMonth
-                                          ? Colors.white
-                                          : Colors.grey.shade300,
-                              borderRadius: BorderRadius.circular(4.0),
+                    const Text("From: "),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => _selectDate(context, true),
+                        child: AbsorbPointer(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: fromDate != null
+                                  ? "${fromDate!.day}/${fromDate!.month}/${fromDate!.year}"
+                                  : "DD/MM/YYYY",
                             ),
-                            child: Text(
-                              '${day.day}',
-                              style: TextStyle(
-                                color: isCurrentMonth ? Colors.black : Colors.grey,
-                              ),
-                            ),
+                            style: const TextStyle(color: Colors.purple),
                           ),
-                        );
-                      },
+                        ),
+                      ),
                     ),
-                    SizedBox(height: 16.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    const Text("To: "),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => _selectDate(context, false),
+                        child: AbsorbPointer(
+                          child: TextField(
+                            decoration: InputDecoration(
+                              hintText: toDate != null
+                                  ? "${toDate!.day}/${toDate!.month}/${toDate!.year}"
+                                  : "DD/MM/YYYY",
+                            ),
+                            style: const TextStyle(color: Colors.purple),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                TableCalendar(
+                  firstDay: DateTime.utc(2000, 1, 1),
+                  lastDay: DateTime.utc(2100, 12, 31),
+                  focusedDay: _focusedDay,
+                  selectedDayPredicate: (day) {
+                    return isSameDay(_selectedDay, day);
+                  },
+                  onDaySelected: (selectedDay, focusedDay) {
+                    setState(() {
+                      _selectedDay = selectedDay;
+                      _focusedDay = focusedDay;
+                    });
+                  },
+                  calendarFormat: CalendarFormat.month,
+                  availableCalendarFormats: const {
+                    CalendarFormat.month: 'Month',
+                  },
+                  calendarBuilders: CalendarBuilders(
+                    defaultBuilder: (context, date, _) {
+                      if (date.day == 25) {
+                        return _buildCalendarCell(
+                            date, Colors.blue, Colors.white); // Selected day
+                      } else if ([1, 2, 10, 11, 19, 20, 31]
+                          .contains(date.day)) {
+                        return _buildCalendarCell(
+                            date, Colors.red, Colors.white); // Full day
+                      } else if ([9, 23].contains(date.day)) {
+                        return _buildCalendarCell(
+                            date, Colors.green, Colors.white); // Available day
+                      } else {
+                        return _buildCalendarCell(
+                            date, Colors.grey, Colors.black); // Blocked day
+                      }
+                    },
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildLegend(Colors.grey, "Blocked"),
+                    _buildLegend(Colors.green, "Available"),
+                    _buildLegend(Colors.red, "Full"),
+                    _buildLegend(Colors.blue, "Selected"),
+                  ],
+                ),
+                const Text(
+                  'Events',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                ),
+                ListTile(
+                  title: const Text('Feb 11, 2024'),
+                  subtitle: const Text(
+                      'Swagat Grand Hotel\nSuresh & Swetha\'s wedding'),
+                  trailing: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      side: const BorderSide(
+                          color: Colors.purple,
+                          width: 2), // Border color and width
+                      shape: RoundedRectangleBorder(
+                        borderRadius:
+                            BorderRadius.circular(8), // Rounded corners
+                      ),
+                      backgroundColor: Colors.white, // Button background color
+                      elevation: 0, // Remove elevation
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize
+                          .min, // Ensures the button adjusts to content
                       children: [
-                        Column(
-                          children: [
-                            Container(width: 16, height: 16, color: Colors.grey),
-                            SizedBox(height: 4),
-                            Text('Blocked'),
-                          ],
+                        Text(
+                          'View More',
+                          style: TextStyle(color: Colors.purple, fontSize: 12),
                         ),
-                        Column(
-                          children: [
-                            Container(width: 16, height: 16, color: Colors.green),
-                            SizedBox(height: 4),
-                            Text('Available'),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Container(width: 16, height: 16, color: Colors.red),
-                            SizedBox(height: 4),
-                            Text('Full'),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Container(width: 16, height: 16, color: Colors.purple),
-                            SizedBox(height: 4),
-                            Text('Selected'),
-                          ],
+                        SizedBox(
+                            width: 5), // Adds spacing between text and icon
+                        Icon(
+                          Icons.arrow_forward, // Replace with the desired icon
+                          color: Colors.purple,
+                          size: 14, // Adjust icon size
                         ),
                       ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-              SizedBox(height: 16.0),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Block selected date range',
-                      style: TextStyle(color: Colors.purple),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      'Show events',
-                      style: TextStyle(color: Colors.purple),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
     );
   }
+
+  Widget _buildCalendarCell(DateTime date, Color bgColor, Color textColor) {
+    return Container(
+      margin: const EdgeInsets.all(4.0),
+      decoration: BoxDecoration(
+        color: bgColor,
+        shape: BoxShape.circle,
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        date.day.toString(),
+        style: TextStyle(color: textColor),
+      ),
+    );
+  }
+
+  Widget _buildLegend(Color color, String label) {
+    return Row(
+      children: [
+        Container(
+          width: 12,
+          height: 12,
+          decoration: BoxDecoration(
+            color: color,
+            shape: BoxShape.circle,
+          ),
+        ),
+        SizedBox(width: 8),
+        Text(label),
+      ],
+    );
+  }
 }
+
+//  DateTime selectedDate = DateTime.now();
+
+//   void _changeMonth(int delta) {
+//     setState(() {
+//       selectedDate = DateTime(selectedDate.year, selectedDate.month + delta);
+//     });
+//   }
+
+//   void _changeYear(int delta) {
+//     setState(() {
+//       selectedDate = DateTime(selectedDate.year + delta, selectedDate.month);
+//     });
+//   }
+
+//   void _selectMonth(BuildContext context) async {
+//     final months = [
+//       'January', 'February', 'March', 'April', 'May', 'June',
+//       'July', 'August', 'September', 'October', 'November', 'December'
+//     ];
+//     final selected = await showDialog<String>(
+//       context: context,
+//       builder: (context) {
+//         return SimpleDialog(
+//           title: Text('Select Month'),
+//           children: months
+//               .map((month) => SimpleDialogOption(
+//                     onPressed: () {
+//                       Navigator.pop(context, month);
+//                     },
+//                     child: Text(month),
+//                   ))
+//               .toList(),
+//         );
+//       },
+//     );
+//     if (selected != null) {
+//       setState(() {
+//         selectedDate = DateTime(
+//           selectedDate.year,
+//           months.indexOf(selected) + 1,
+//         );
+//       });
+//     }
+//   }
+
+//   void _selectYear(BuildContext context) async {
+//     final years = List.generate(2024 - 1990 + 1, (index) => 1990 + index);
+//     final selected = await showDialog<int>(
+//       context: context,
+//       builder: (context) {
+//         return SimpleDialog(
+//           title: Text('Select Year'),
+//           children: years
+//               .map((year) => SimpleDialogOption(
+//                     onPressed: () {
+//                       Navigator.pop(context, year);
+//                     },
+//                     child: Text(year.toString()),
+//                   ))
+//               .toList(),
+//         );
+//       },
+//     );
+//     if (selected != null) {
+//       setState(() {
+//         selectedDate = DateTime(
+//           selected,
+//           selectedDate.month,
+//         );
+//       });
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final monthName = [
+//       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+//       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+//     ][selectedDate.month - 1];
+
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Month & Year Selector'),
+//       ),
+//       body: Center(
+//         child: Row(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             IconButton(
+//               icon: Icon(Icons.arrow_left),
+//               onPressed: () => _changeMonth(-1),
+//             ),
+//             GestureDetector(
+//               onTap: () => _selectMonth(context),
+//               child: Text(
+//                 monthName,
+//                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+//               ),
+//             ),
+//             IconButton(
+//               icon: Icon(Icons.arrow_right),
+//               onPressed: () => _changeMonth(1),
+//             ),
+//             SizedBox(width: 16),
+//             IconButton(
+//               icon: Icon(Icons.arrow_left),
+//               onPressed: () => _changeYear(-1),
+//             ),
+//             GestureDetector(
+//               onTap: () => _selectYear(context),
+//               child: Text(
+//                 selectedDate.year.toString(),
+//                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+//               ),
+//             ),
+//             IconButton(
+//               icon: Icon(Icons.arrow_right),
+//               onPressed: () => _changeYear(1),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
